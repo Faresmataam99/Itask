@@ -35,7 +35,7 @@ export default () => {
           <p className="text-3xl font-semibold"> {user.firstname}'s Private tasks </p>
         </div>
         <div className="flex flex-col gap-3">
-          <p className="text-lg"> 🏠 Home</p>
+          <p className="text-lg">🏠Home</p>
         </div>
         {/* the list */}
         <div className="flex items-center gap-2 ">
