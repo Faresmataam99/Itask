@@ -13,7 +13,7 @@ const authSlice = createSlice({
       state.isConnected = true;
       state.user = action.payload;
     },
-    logoutAction: (state, action) => {
+    logoutAction: (state) => {
       state.user = {};
       state.isConnected = false;
     },
