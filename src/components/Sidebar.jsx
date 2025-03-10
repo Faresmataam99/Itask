@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "@/lib/store/userSlice";
 import Link from "next/link";
-
 import { Dancing_Script } from "next/font/google";
 import axios from "axios";
 import { addTask } from "@/lib/store/TasksSlice";
@@ -13,10 +12,22 @@ const dancingScript = Dancing_Script({ subsets: ["latin"] });
 
 export default () => {
   const [tasks, setTasks] = useState([]);
+  const [expandSearch,setExpandSearch]=useState(false)
+  const [title,setTitle]=useState('')
+  const [category,setCategory]=useState('')
   const user = useSelector((state) => state.user.user);
   const isConnected = useSelector((state) => state.user.isConnected);
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
+
+  useEffect(()=>{
+    const addTask = async ()=>{
+      const response = await axios.post("http://localhost:8000/tasks")
+      .then((response)=>setTasks(response.data))
+    }
+  })
+
+  
 
   const handleChange = (e) => {
     const input = e.target.value;
@@ -55,16 +66,12 @@ export default () => {
 
   return (
     <>
-      <div className="flex flex-col gap-10 max-w-screen-sm p-2 sticky left-0 z-50 border">
+      <div className="flex flex-col gap-10  p-2 sticky left-0 z-50 border">
         <div className="flex">
-          {isConnected ? (
             <p className={`${dancingScript.className} text-4xl fonst-semibold`}>
               {" "}
-              {user.firstname}'s Private tasks{" "}
+              Fares's Private tasks{" "}
             </p>
-          ) : (
-            <div></div>
-          )}
         </div>
         <div className="flex flex-col gap-3">
           <p className="text-lg">🏠Home</p>
@@ -117,8 +124,14 @@ export default () => {
           <input
             type="text"
             className="bg-gray-200 rounded-full"
-            placeholder="Create a new task"
+            placeholder="Create a new List"
             onChange={()=>dispatch(addTask(tasks))}
+            style={{
+              width:expandSearch ? "500px":"50px",
+              transition:"width 0.3s ease"
+            }}
+            onFocus={()=>setExpandSearch(true)}
+            onBlur={()=>setExpandSearch(false)}
           />
           <Link href={"/"}>
             {" "}
@@ -139,8 +152,8 @@ export default () => {
           <div className="rounded-lg hover:-translate-y-3  hover:bg-black hover:text-white transtion-all hover:shadow-indigo-700 transition-all duration-200 hover:shadow-lg ">
             <img
               src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/202106/ezgif.com-gif-maker_4__1200x768.jpeg?size=690:388"
-              height={250}
-              width={250}
+              height={100}
+              width={100}
               className="rounded-lg w-full object-cover"
             />
             <p className="text-lg font-semibold mt-3">
@@ -153,8 +166,8 @@ export default () => {
             <img
               src="https://i.ytimg.com/vi/-p47G3t1bpc/maxresdefault.jpg"
               alt=""
-              height={250}
-              width={250}
+              height={100}
+              width={100}
               className="rounded-lg w-full object-cover"
             />
             <p className="text-lg font-semibold mt-3">

@@ -26,7 +26,6 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
 <div className="flex gap-3">
-        <Sidebar/>
         {children}
 </div>
       </body>
