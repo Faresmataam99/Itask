@@ -70,7 +70,7 @@ export default function Home() {
 
   useEffect(()=>{
 const token = localStorage.getItem("token")
-if(axios){
+if(token){
   axios.get("http://localhost:8000/account",{
     headers:{authorization:`Bearer ${token}`}
   }).then((response)=>dispatch(loginAction(response.data)))}
@@ -230,7 +230,7 @@ if(axios){
 
         {/* group panel */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-lg hover:-translate-y-3 hover:bg-black hover:text-white transition-all hover:shadow-indigo-700 transition-all duration-200 hover:shadow-lg">
+          <div className="rounded-lg hover:-translate-y-3 hover:bg-black hover:text-white  hover:shadow-indigo-700 transition-all duration-200 hover:shadow-lg">
             <img
               src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/202106/ezgif.com-gif-maker_4__1200x768.jpeg?size=690:388"
               height={100}
@@ -243,7 +243,7 @@ if(axios){
           </div>
 
           <Link href={"/login"}>
-            <div className="rounded-lg hover:shadow-indigo-700 hover:bg-black hover:text-white transition-all hover:-translate-y-4 transition-all duration-200 hover:shadow-lg">
+            <div className="rounded-lg hover:shadow-indigo-700 hover:bg-black hover:text-white  hover:-translate-y-4 transition-all duration-200 hover:shadow-lg">
               <img
                 src="https://i.ytimg.com/vi/-p47G3t1bpc/maxresdefault.jpg"
                 alt=""
@@ -256,11 +256,13 @@ if(axios){
               </p>
             </div>
           </Link>
-          <div className="flex items-center">
+          <div className="flex items-center text-lg bg-gray-200 rounded-full gap-3">
             <input
               type="text"
               className="rounded-full hover:bg-gray-300 p-3 bg-gray-200 transition-all duration-200"
+              placeholder="Create a new group"
             />
+            <span className=" rounded-full px-3 py-1.5 border-1"> ⌘ </span>
           </div>
         </div>
       </div>
