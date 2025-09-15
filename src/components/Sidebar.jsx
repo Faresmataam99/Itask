@@ -2,17 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginAction } from "@/lib/store/userSlice";
+import { loginAction } from "../lib/store/userSlice";
 import Link from "next/link";
 import { Dancing_Script } from "next/font/google";
 import axios from "axios";
-import { addTask } from "@/lib/store/TasksSlice";
+import { addTask } from "../lib/store/tasksSlice";
 import { motion } from "framer-motion";
 import Modal from "react-modal";
 
 const dancingScript = Dancing_Script({ subsets: ["latin"] });
-const filters = ["all", "done"];
-export default function Home() {
+export default () => {
   const [tasks, setTasks] = useState([]);
   const [expandSearch, setExpandSearch] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -28,10 +27,10 @@ export default function Home() {
   const [personal, setPersonal] = useState("");
   const [work, setWork] = useState("");
   const [selectedTasks, setSelectedTasks] = useState("all");
-  const [coloredBox, setColoredBox] = useState(false);
-
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
+  const [tasksFilteredColors, setTasksFilteredColors] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,27 +46,26 @@ export default function Home() {
       console.error({ message: "error adding task" });
     }
   };
+
   const createGroup = (e) => {
     const input = e.target.value;
     setQuery(input);
+  };
+
+  const countingTasks = async () => {
+    try {
+      const response = await axios
+        .get("http://localhost:8000")
+        .then((response) => setTasks(response.data));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleChange = (e) => {
     const input = e.target.value;
     setQuery(input);
   };
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     axios
-  //       .get("http://localhost:8000/account", {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       })
-  //       .then((response) => dispatch(loginAction(response.data)));
-  //   }
-  // }, [dispatch]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -80,55 +78,65 @@ export default function Home() {
     }
   }, [dispatch]);
 
-  const fetchTasks = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/tasks");
-      setTasks(response.data);
-    } catch (e) {
-      console.error({ message: "error finding tasks" });
-    }
-  };
-
   const filterTasks = (filter) => {
     setSelectedTasks(filter);
-    coloredBox(filter);
   };
 
   return (
     <>
       <div className="flex flex-col gap-10 p-2 sticky left-0 z-50 border">
-        <div className="flex">
-          <p className={`${dancingScript.className} text-4xl font-semibold`}>
-            Fares's Private tasks
-          </p>
-        </div>
+        {isConnected ? (
+          <div className="flex">
+            <p className={`${dancingScript.className} text-4xl font-semibold`}>
+              {user.firstName} Private tasks
+            </p>
+          </div>
+        ) : (
+          <div>
+            <p className="font-semibold text-lg">
+              Join Itaskly to manage your lifestyle and unleash ur productivity
+            </p>
+          </div>
+        )}
         <div className="flex flex-col gap-3">
           <p className="text-lg">🏠Home</p>
         </div>
         {/* the list */}
-        <div className="flex items-center gap-2">
+        {/* first task panel */}
+        <div className="flex gap-2">
           <span
-            type="radius"
-            className="cursor-pointer rounded-lg p-3 border-2 border-green-300 hover:bg-green-200 transition-all duration-200"
+            className={`cursor-pointer p-3 border-2 rounded-lg border-green-300 hover:bg-green-300 transition-all duration-200`}
           ></span>
-          <p className="text-lg">Completed</p>
-          <span> {tasks.length} </span>
+          <p className={`${dancingScript.className} font-bold text-lg`}>
+            Completed
+          </p>
+          <span>{tasks.length}</span>
         </div>
+        {/* first task panel */}
 
+        {/* second tasks panel */}
         <div className="flex items-center gap-2">
+          {" "}
           <span
-            type="radius"
-            className="cursor-pointer rounded-lg p-3 border-2 border-red-500 hover:bg-red-400 transition-all duration-200"
-          ></span>
-          <p className="text-lg">Personal</p>
-          <span> {tasks.length} </span>
+            onClick={() => setTasksFilteredColors(!tasksFilteredColors)}
+            className={`cursor-pointer rounded-lg p-3 border-2 border-orange-400 hover:bg-orange-400 transition-all duration-200 ${
+              tasksFilteredColors
+                ? "bg-orange-400 hover:bg-orange-800"
+                : "bg-white"
+            }`}
+          ></span>{" "}
+          <p className={`${dancingScript.className}font-bold text-lg`}>
+            Personal
+          </p>{" "}
+          <span> {tasks.length} </span>{" "}
         </div>
+        {/* second tasks panel */}
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           {filters.map((filter) => (
             <span
-              onClick={() => filterTasks(filter)}
-              className={`px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200 ${
+              onClick={(e) => setTasksFilteredColors(e.target.value)}
+              className={`px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200 cursor-pointer ${
                 filter === selectedTasks
                   ? "bg-orange-500 border-orange-500 border-2 rounded-lg"
                   : "bg-white p-3 "
@@ -141,7 +149,7 @@ export default function Home() {
           ))}
           <p className="text-lg">Work</p>
           <span> {tasks.length} </span>
-        </div>
+        </div> */}
 
         <div className="cursor-pointer flex items-center gap-2 hover:bg-gray-200 transition-all duration-200 p-3">
           <span className="text-xl"> 🚗 </span>
@@ -149,17 +157,19 @@ export default function Home() {
           <span> {tasks.length} </span>
         </div>
 
-        <div className="flex items-center p-3 rounded-lg hover:bg-gray-200 transition-all duration-200 gap-2">
+        <div className="flex cursor-pointer items-center p-3 rounded-lg hover:bg-gray-200 transition-all duration-200 gap-2">
           <span className="text-xl"> 📚 </span>
           <p className="text-lg">Book list</p>
           <span> {tasks.length} </span>
         </div>
 
-        <div className="flex items-center rounded-lg p-3 hover:bg-gray-200 transition-all duration-200 gap-2">
-          <span className="text-xl"> 🍎 </span>
-          <p className="text-lg">Diet</p>
-          <span>{tasks.length} </span>
-        </div>
+        <Link href={"/diet"}>
+          <div className="flex cursor-pointer items-center rounded-lg p-3 hover:bg-gray-200 transition-all duration-200 gap-2">
+            <span className="text-xl"> 🍎 </span>
+            <p className="text-lg">Diet</p>
+            <span>{tasks.length} </span>
+          </div>
+        </Link>
         {/* the list */}
         <div className="rounded-full bg-gray-200 p-2 text-lg w-80 gap-2 items-center flex">
           <button
@@ -263,8 +273,8 @@ export default function Home() {
           </div>
           {isConnected ? (
             <div className="flex rounded-lg ">
-              <img src="" alt="current news" />
-              <p>{currentNews}</p>
+              <img src="organizing.jpg" alt="current news" />
+              <p>soon</p>
             </div>
           ) : (
             <Link href={"/login"}>
@@ -294,4 +304,4 @@ export default function Home() {
       </div>
     </>
   );
-}
+};

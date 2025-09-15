@@ -12,17 +12,22 @@
     "@next/font": "^14.2.15",
     "@reduxjs/toolkit": "^2.6.0",
     "axios": "^1.8.1",
+    "country-flag-icons": "^1.5.19",
     "framer-motion": "^12.4.7",
+    "motion-v": "^1.7.0",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-date-picker": "^11.0.0",
     "react-dom": "^19.0.0",
     "react-modal": "^3.16.3",
     "react-redux": "^9.2.0",
+    "react-router-dom": "^7.8.2",
     "redux": "^5.0.1"
   },
   "devDependencies": {
+    "@types/react": "19.1.11",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "typescript": "5.9.2"
   }
 }
