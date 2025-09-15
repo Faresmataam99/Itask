@@ -111,7 +111,7 @@ export default () => {
             className="flex cursor-pointer  items-center gap-3 bg-black text-white rounded-full text-lg font-semibold p-3 w-full hover:bg-gray-700 transition-all duration-200"
           >
             <span>+</span>
-            <p>Create a new task</p>
+            <p>Create a New Task</p>
           </div>
           <Modal
             isOpen={modalIsOpened}
